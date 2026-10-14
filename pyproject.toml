@@ -1,0 +1,50 @@
+[project]
+name = "remarcable"
+version = "0.1.0"
+description = "Django product catalog with search and filtering."
+authors = [
+    {name = "border-in-canada",email = "mathesd84@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "django (>=5.2,<5.3)",
+    "python-dotenv (>=1.2.4,<2.0.0)"
+]
+
+[tool.poetry]
+package-mode = false
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "black (>=26.10.1,<27.0.0)",
+    "ruff (>=0.17.0,<0.18.0)",
+    "djlint (>=1.46.4,<2.0.0)",
+    "pre-commit (>=4.7.0,<5.0.0)"
+]
+
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["config", "products"]
+
+[tool.djlint]
+profile = "django"
+extension = "html"
+indent = 2
+max_line_length = 100
+# Meta tag rules; page metadata is out of scope for this project.
+ignore = "H030,H031"
