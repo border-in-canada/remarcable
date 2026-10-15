@@ -287,3 +287,13 @@ poetry run python manage.py test
 ```
 
 `makemigrations --check` fails if a model change is missing its migration.
+
+## AI Usage
+
+I used an AI coding assistant while building this project, for:
+
+- **Project scaffolding:** The Django project and app boilerplate.
+- **Documentation:** Drafting and editing this README.
+- **Product ideas:** Suggestions for the sample categories, tags, and products.
+
+The design decisions (such as global tags, tag matching, SQLite, Poetry, code comments and performance considerations) were all my own.
