@@ -86,7 +86,7 @@ queries in `filter_products` (`products/querysets.py`).
 
 The page at `/` is a plain Django template (`products/templates/products/`)
 with a little CSS and no JavaScript, so there is no front-end build step. It
-lists every product with its description, category, and tags.
+lists products with their description, category, and tags, ten to a page.
 
 The filter form at the top uses a GET request, so every search has a shareable
 URL. It has a search box, a category dropdown, a checkbox per tag, "Any" and
@@ -95,10 +95,30 @@ The form keeps the submitted values after a search, and the page shows how many
 products matched, or a message when none do.
 
 If a filter value is invalid, the page shows the error next to the field and
-lists no products instead of ignoring the bad value. A request is served with
-two queries for the products (the products with their category, then all of
-their tags), however many products match, plus one query each for the category
-and tag choices in the form.
+lists no products instead of ignoring the bad value.
+
+### Pagination
+
+Results are paginated with Django's `Paginator`, ten products per page
+(`PAGE_SIZE` in `products/views.py`). The `page` query parameter selects the
+page, and results are ordered by name and then primary key, so products never
+move between pages or appear twice.
+
+- The Previous and Next links and the numbered links keep every filter, including
+  repeated `tags` values, and change only `page`. Long page lists are shortened
+  with an ellipsis.
+- A new search starts at page 1, because the form does not submit a page number.
+- A missing or non-numeric `page` shows page 1, and a number outside the range
+  shows the last page.
+- The links are hidden when everything fits on one page.
+
+A page is served with three queries for products, however many products match:
+the total count, the page of products with their category, and the tags for
+those products. The form's category and tag choices add one query each.
+
+The docstring on the `product_list` view describes how to add user-selectable
+ordering safely. Comments in the view and in `products/forms.py` explain why
+nothing is cached yet and when caching would be worth adding.
 
 ## Scaling notes
 
@@ -112,8 +132,16 @@ of thousands of products, not millions. What would change first at larger scale:
   lookups instead.
 - **All-tags matching:** it joins the tag table once per selected tag. A single
   join with `GROUP BY` and `HAVING COUNT` scales better.
-- **Filter form lists:** they are loaded from the database on each request. Cache
-  them, and clear the cache when tags or categories change.
+- **Filter form lists:** they are loaded from the database on each request. That
+  is two small indexed queries, so caching them is not worth it here. Consider it
+  only if profiling shows they matter, for example with a remote database under
+  heavy traffic. Use a shared cache and clear it when tags or categories change,
+  including bulk changes, which skip Django signals.
+- **Result caching:** results are not cached. The filter, tag mode, and page
+  combinations are many, so hit rates would be low, and stale results cost more
+  than the queries save.
+- **Pagination:** page numbers need an exact count, and `OFFSET` gets slower on
+  deep pages. Use keyset pagination, or drop the total, for very large results.
 
 Any-tag matching already uses an `Exists` subquery, which returns each product
 once without a join or `DISTINCT`. The database already indexes the category

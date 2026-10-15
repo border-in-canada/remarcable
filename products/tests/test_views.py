@@ -14,7 +14,7 @@ class ProductListViewTests(test_filters.FilterTestCase):
         return self.client.get(reverse("products:product_list"), params)
 
     def shown(self, response):
-        return [product.name for product in response.context["products"]]
+        return [product.name for product in response.context["page"]]
 
     def test_page_is_served_at_the_site_root(self):
         self.assertEqual(reverse("products:product_list"), "/")
@@ -115,13 +115,14 @@ class ProductListQueryTests(test_filters.FilterTestCase):
             self.client.get(reverse("products:product_list"), params)
         return [query["sql"] for query in captured]
 
-    def test_products_load_in_two_queries(self):
-        # One for products with their category, one for all their tags. The form's
-        # category and tag choices are separate queries on other tables.
+    def test_products_load_in_three_queries(self):
+        # The total count, the page of products with their category, and the
+        # tags for those products. The form's category and tag choices are
+        # separate queries on other tables.
         for params in self.requests():
             with self.subTest(params=params):
                 sql = self.queries_for(params)
-                self.assertEqual(sum("products_product" in q for q in sql), 2)
+                self.assertEqual(sum("products_product" in q for q in sql), 3)
 
     def test_query_count_does_not_grow_with_the_number_of_products(self):
         before = [len(self.queries_for(params)) for params in self.requests()]

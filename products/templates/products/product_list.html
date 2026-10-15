@@ -34,10 +34,10 @@
   {% if form.errors %}
     <p class="error">Fix the errors above to see products.</p>
   {% else %}
-    <p class="count">{{ products|length }} product{{ products|length|pluralize }} found</p>
-    {% if products %}
+    <p class="count">{{ page.paginator.count }} product{{ page.paginator.count|pluralize }} found</p>
+    {% if page %}
       <ul class="products">
-        {% for product in products %}
+        {% for product in page %}
           <li class="product">
             <h2>{{ product.name }}</h2>
             <p>{{ product.description }}</p>
@@ -50,6 +50,26 @@
           </li>
         {% endfor %}
       </ul>
+      {% if page.paginator.num_pages > 1 %}
+        <nav class="pagination" aria-label="Pages">
+          {% if page.has_previous %}
+            <a href="{% querystring page=page.previous_page_number %}" rel="prev">Previous</a>
+          {% endif %}
+          {% for number in page_numbers %}
+            {% if number == page.paginator.ELLIPSIS %}
+              <span>{{ number }}</span>
+            {% elif number == page.number %}
+              <span aria-current="page">{{ number }}</span>
+            {% else %}
+              <a href="{% querystring page=number %}">{{ number }}</a>
+            {% endif %}
+          {% endfor %}
+          {% if page.has_next %}
+            <a href="{% querystring page=page.next_page_number %}" rel="next">Next</a>
+          {% endif %}
+          <span class="status">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+        </nav>
+      {% endif %}
     {% else %}
       <p class="empty">No products match your search.</p>
     {% endif %}

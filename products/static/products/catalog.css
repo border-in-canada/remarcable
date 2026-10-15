@@ -82,3 +82,19 @@ fieldset div > div {
     border-radius: 0.25rem;
     padding: 0 0.5rem;
 }
+
+.pagination {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1rem 0;
+}
+
+.pagination [aria-current="page"] {
+    font-weight: bold;
+}
+
+.pagination .status {
+    color: #555;
+}

@@ -6,8 +6,15 @@ from .querysets import TAG_MODE_ALL, TAG_MODE_ANY
 
 class ProductFilterForm(forms.Form):
     q = forms.CharField(label="Search descriptions", required=False)
-    # Lists every category and tag, which suits a small catalog. At scale, use
-    # type-ahead lookups instead of a full dropdown and checkbox list.
+    # Every category and tag is listed, which is fine for a small catalog. If
+    # the lists grow large, switch to type-ahead lookups: a long dropdown or
+    # checkbox list becomes a usability problem before a performance one.
+    #
+    # These choices are not cached because they are two small indexed queries.
+    # Consider caching only if profiling shows they matter, for example with a
+    # remote database under heavy traffic. Use a shared cache and clear it when a
+    # category or tag is added, renamed or deleted, including bulk changes, which
+    # skip Django signals.
     category = forms.ModelChoiceField(
         queryset=Category.objects.all(),
         required=False,
