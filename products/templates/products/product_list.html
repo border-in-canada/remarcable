@@ -1,0 +1,57 @@
+{% extends "products/base.html" %}
+{% block title %}Products{% endblock title %}
+{% block content %}
+  <h1>Products</h1>
+  <form method="get"
+        action="{% url "products:product_list" %}"
+        class="filters">
+    {{ form.non_field_errors }}
+    <div class="field">
+      <label for="{{ form.q.id_for_label }}">{{ form.q.label }}</label>
+      {{ form.q }}
+      {{ form.q.errors }}
+    </div>
+    <div class="field">
+      <label for="{{ form.category.id_for_label }}">{{ form.category.label }}</label>
+      {{ form.category }}
+      {{ form.category.errors }}
+    </div>
+    <fieldset>
+      <legend>{{ form.tags.label }}</legend>
+      {{ form.tags }}
+      {{ form.tags.errors }}
+    </fieldset>
+    <fieldset>
+      <legend>{{ form.tag_mode.label }}</legend>
+      {{ form.tag_mode }}
+      {{ form.tag_mode.errors }}
+    </fieldset>
+    <div class="actions">
+      <button type="submit">Search</button>
+      <a href="{% url "products:product_list" %}">Reset</a>
+    </div>
+  </form>
+  {% if form.errors %}
+    <p class="error">Fix the errors above to see products.</p>
+  {% else %}
+    <p class="count">{{ products|length }} product{{ products|length|pluralize }} found</p>
+    {% if products %}
+      <ul class="products">
+        {% for product in products %}
+          <li class="product">
+            <h2>{{ product.name }}</h2>
+            <p>{{ product.description }}</p>
+            <p class="meta">Category: {{ product.category.name }}</p>
+            {% if product.tags.all %}
+              <ul class="tags">
+                {% for tag in product.tags.all %}<li>{{ tag.name }}</li>{% endfor %}
+              </ul>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="empty">No products match your search.</p>
+    {% endif %}
+  {% endif %}
+{% endblock content %}

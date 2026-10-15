@@ -1,0 +1,84 @@
+body {
+    font-family: system-ui, sans-serif;
+    line-height: 1.5;
+    margin: 0 auto;
+    max-width: 60rem;
+    padding: 1rem;
+}
+
+header a {
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.filters {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.field label {
+    display: block;
+    font-weight: bold;
+}
+
+.filters input[type="text"],
+.filters select {
+    max-width: 100%;
+    width: 100%;
+}
+
+fieldset {
+    border: 1px solid #ccc;
+    min-width: 0;
+}
+
+fieldset div > div {
+    display: inline-block;
+    margin-right: 1rem;
+}
+
+.actions {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+}
+
+.errorlist,
+.error {
+    color: #b00020;
+}
+
+.products,
+.tags {
+    list-style: none;
+    padding: 0;
+}
+
+.product {
+    border-top: 1px solid #ddd;
+    padding: 0.5rem 0;
+}
+
+.product h2 {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.meta {
+    color: #555;
+    margin: 0.25rem 0;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.tags li {
+    background: #eef;
+    border-radius: 0.25rem;
+    padding: 0 0.5rem;
+}

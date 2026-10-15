@@ -25,8 +25,8 @@ poetry run python manage.py runserver
 If you copied `.env.example`, set `DJANGO_SECRET_KEY` in `.env` to a long random
 string. The project will not start without it.
 
-The Django admin is at <http://127.0.0.1:8000/admin/>. Create an administrator
-account with:
+The product page is at <http://127.0.0.1:8000/> and the Django admin at
+<http://127.0.0.1:8000/admin/>. Create an administrator account with:
 
 ```sh
 poetry run python manage.py createsuperuser
@@ -80,8 +80,25 @@ For example, `?q=boils&category=1&tags=2&tags=3&tag_mode=all` finds products in
 category 1 whose description contains "boils" and that have both tag 2 and tag 3.
 
 The validation lives in `ProductFilterForm` (`products/forms.py`) and the
-queries in `filter_products` (`products/querysets.py`). The product page that
-uses them is added in a later change.
+queries in `filter_products` (`products/querysets.py`).
+
+## Product page
+
+The page at `/` is a plain Django template (`products/templates/products/`)
+with a little CSS and no JavaScript, so there is no front-end build step. It
+lists every product with its description, category, and tags.
+
+The filter form at the top uses a GET request, so every search has a shareable
+URL. It has a search box, a category dropdown, a checkbox per tag, "Any" and
+"All" radio buttons, a Search button, and a Reset link that clears everything.
+The form keeps the submitted values after a search, and the page shows how many
+products matched, or a message when none do.
+
+If a filter value is invalid, the page shows the error next to the field and
+lists no products instead of ignoring the bad value. A request is served with
+two queries for the products (the products with their category, then all of
+their tags), however many products match, plus one query each for the category
+and tag choices in the form.
 
 ## Scaling notes
 
@@ -162,7 +179,7 @@ directly with:
 ```sh
 poetry run ruff check --fix .
 poetry run black .
-poetry run djlint --reformat --lint products/templates   # once templates exist
+poetry run djlint --reformat --lint products/templates
 ```
 
 ### Pre-commit hooks
