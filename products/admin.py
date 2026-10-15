@@ -18,6 +18,9 @@ class ProductAdmin(admin.ModelAdmin):
     # Tags are left out of list_display: showing them costs a query per row.
     list_display = ["name", "category"]
     list_select_related = ["category"]
-    list_filter = ["category", "tags"]
-    search_fields = ["name", "description"]
-    filter_horizontal = ["tags"]
+    list_filter = ["category"]
+    # Tag names are searchable instead of listed as a filter: a sidebar of every
+    # tag stops being usable once there are many.
+    search_fields = ["name", "description", "tags__name"]
+    # A search box rather than a pick-list of every tag.
+    autocomplete_fields = ["tags"]

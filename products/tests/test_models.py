@@ -39,31 +39,31 @@ class CategoryModelTests(TestCase):
 
 class TagModelTests(TestCase):
     def test_str_is_name(self):
-        self.assertEqual(str(Tag(name="eco")), "eco")
+        self.assertEqual(str(Tag(name="gift")), "gift")
 
     def test_name_must_be_unique(self):
-        Tag.objects.create(name="eco")
+        Tag.objects.create(name="gift")
         with self.assertRaises(IntegrityError), transaction.atomic():
-            Tag.objects.create(name="eco")
+            Tag.objects.create(name="gift")
 
     def test_name_uniqueness_ignores_case(self):
-        Tag.objects.create(name="eco")
+        Tag.objects.create(name="gift")
         with self.assertRaises(IntegrityError), transaction.atomic():
-            Tag.objects.create(name="ECO")
+            Tag.objects.create(name="GIFT")
 
     def test_duplicate_name_gives_a_validation_message(self):
-        Tag.objects.create(name="eco")
+        Tag.objects.create(name="gift")
         with self.assertRaisesMessage(
             ValidationError, "A tag with this name already exists."
         ):
-            Tag(name="Eco").validate_constraints()
+            Tag(name="Gift").validate_constraints()
 
 
 class ProductModelTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.category = Category.objects.create(name="Kitchen")
-        cls.eco = Tag.objects.create(name="eco")
+        cls.gift = Tag.objects.create(name="gift")
         cls.sale = Tag.objects.create(name="sale")
 
     def make_product(self, name="Kettle", **kwargs):
@@ -92,9 +92,9 @@ class ProductModelTests(TestCase):
 
     def test_product_can_have_several_tags(self):
         product = self.make_product()
-        product.tags.set([self.eco, self.sale])
-        self.assertEqual(set(product.tags.all()), {self.eco, self.sale})
-        self.assertEqual(list(self.eco.products.all()), [product])
+        product.tags.set([self.gift, self.sale])
+        self.assertEqual(set(product.tags.all()), {self.gift, self.sale})
+        self.assertEqual(list(self.gift.products.all()), [product])
 
     def test_product_can_have_no_tags(self):
         self.assertFalse(self.make_product().tags.exists())
@@ -114,7 +114,7 @@ class ProductAdminTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.category = Category.objects.create(name="Kitchen")
-        cls.eco = Tag.objects.create(name="eco")
+        cls.gift = Tag.objects.create(name="gift")
         cls.sale = Tag.objects.create(name="sale")
         cls.admin_user = get_user_model().objects.create_superuser(
             username="admin", password="not-a-real-password"
@@ -123,10 +123,37 @@ class ProductAdminTests(TestCase):
     def setUp(self):
         self.client.force_login(self.admin_user)
 
-    def test_changelist_loads_with_search_and_filters(self):
+    def test_changelist_can_be_filtered_by_category(self):
+        product = Product.objects.create(
+            name="Kettle", description="Boils water.", category=self.category
+        )
         url = reverse("admin:products_product_changelist")
-        response = self.client.get(url, {"q": "kettle", "tags__id__exact": self.eco.pk})
+        response = self.client.get(url, {"category__id__exact": self.category.pk})
+        self.assertContains(response, product.name)
+
+    def test_changelist_search_matches_tag_names_without_duplicates(self):
+        product = Product.objects.create(
+            name="Kettle", description="Boils water.", category=self.category
+        )
+        product.tags.set([self.gift, Tag.objects.create(name="gift card")])
+        url = reverse("admin:products_product_changelist")
+        response = self.client.get(url, {"q": "gift"})
+        self.assertEqual(response.context["cl"].result_count, 1)
+        self.assertContains(response, product.name)
+
+    def test_tag_autocomplete_returns_matching_tags(self):
+        response = self.client.get(
+            reverse("admin:autocomplete"),
+            {
+                "term": "gif",
+                "app_label": "products",
+                "model_name": "product",
+                "field_name": "tags",
+            },
+        )
         self.assertEqual(response.status_code, 200)
+        texts = [result["text"] for result in response.json()["results"]]
+        self.assertEqual(texts, ["gift"])
 
     def test_duplicate_category_name_shows_a_message_in_admin(self):
         response = self.client.post(
@@ -143,9 +170,9 @@ class ProductAdminTests(TestCase):
                 "name": "Kettle",
                 "description": "Boils water.",
                 "category": self.category.pk,
-                "tags": [self.eco.pk, self.sale.pk],
+                "tags": [self.gift.pk, self.sale.pk],
             },
         )
         self.assertEqual(response.status_code, 302)
         product = Product.objects.get(name="Kettle")
-        self.assertEqual(set(product.tags.all()), {self.eco, self.sale})
+        self.assertEqual(set(product.tags.all()), {self.gift, self.sale})

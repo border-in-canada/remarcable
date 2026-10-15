@@ -49,9 +49,62 @@ always stable.
 ## Admin
 
 Add categories and tags first, then products, at
-<http://127.0.0.1:8000/admin/>. The product list can be searched by name or
-description and filtered by category or tag, and tags are assigned with a
-two-pane selector on the product form.
+<http://127.0.0.1:8000/admin/>. The product list can be filtered by category
+and searched by name, description, or tag name. Tags are chosen on the product
+form with a search box, so the form stays usable with many tags.
+
+## Search and filtering
+
+Products are searched and filtered with these inputs, which can be combined:
+
+| Input     | Query parameter | Behavior                                            |
+| --------- | --------------- | --------------------------------------------------- |
+| Search    | `q`             | Case-insensitive substring match on the description |
+| Category  | `category`      | Products in the chosen category                     |
+| Tags      | `tags`          | One or more tags, repeated in the query string      |
+| Tag match | `tag_mode`      | `any` (default) or `all`, used when tags are set    |
+
+- **All inputs are optional.** An empty or missing input is ignored, so a request
+  with no inputs matches every product.
+- **Inputs combine with AND.** A product must satisfy the search, the category,
+  and the tag condition together.
+- **Search covers descriptions only.** Product names are not searched, and
+  leading and trailing whitespace in the search text is ignored.
+- **Tag match.** With `any`, a product matches if it has at least one selected
+  tag. With `all`, it must have every selected tag. A product is listed once
+  however many selected tags it has. A missing `tag_mode` means `any`.
+- **Invalid values are rejected, not ignored.** An unknown category or tag ID, a
+  malformed ID, or an unsupported `tag_mode` makes the filter form invalid.
+
+For example, `?q=boils&category=1&tags=2&tags=3&tag_mode=all` finds products in
+category 1 whose description contains "boils" and that have both tag 2 and tag 3.
+
+The validation lives in `ProductFilterForm` (`products/forms.py`) and the
+queries in `filter_products` (`products/querysets.py`). The product page that
+uses them is added in a later change.
+
+## Scaling notes
+
+This is a take-home project, so it favors simplicity and is sized for a catalog
+of thousands of products, not millions. What would change first at larger scale:
+
+- **Description search:** it is a substring match (`LIKE '%text%'`), which scans
+  every row. Use PostgreSQL full-text search, or `pg_trgm` with a GIN index.
+- **Database:** SQLite needs no setup. Use PostgreSQL for search and concurrency.
+- **Tag and category pickers:** every tag and category is listed. Use type-ahead
+  lookups instead.
+- **All-tags matching:** it joins the tag table once per selected tag. A single
+  join with `GROUP BY` and `HAVING COUNT` scales better.
+- **Filter form lists:** they are loaded from the database on each request. Cache
+  them, and clear the cache when tags or categories change.
+
+Any-tag matching already uses an `Exists` subquery, which returns each product
+once without a join or `DISTINCT`. The database already indexes the category
+foreign key and both sides of the tag relationship. Tags are shared by all
+products and managed by staff in the admin; visitors cannot create them.
+
+Before changing a query for performance, check the generated SQL and the
+database's plan with `str(queryset.query)` and `queryset.explain()`.
 
 ## Working with Poetry
 
