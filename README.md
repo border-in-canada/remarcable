@@ -24,7 +24,12 @@ poetry run python manage.py runserver
 ```
 
 If you copied `.env.example`, set `DJANGO_SECRET_KEY` in `.env` to a long random
-string. The project will not start without it.
+string. The project will not start without it. After `poetry install`, you can
+generate one with:
+
+```sh
+poetry run python -c "from django.core.management.utils import get_random_secret_key as key; print(key())"
+```
 
 The product page is at <http://127.0.0.1:8000/> and the Django admin at
 <http://127.0.0.1:8000/admin/>. Create an administrator account with:
@@ -52,6 +57,20 @@ regenerate it after editing the data in the admin:
 ```sh
 poetry run python manage.py dumpdata products --indent 2 --output products/fixtures/sample_data.json
 ```
+
+## Assumptions
+
+- Each product belongs to exactly one category and has any number of tags,
+  including none.
+- Categories and tags are global: staff manage them in the admin, and visitors
+  can only filter by them. Names are unique ignoring case.
+- Search matches product descriptions only, as the assignment states, using a
+  case-insensitive substring match.
+- The search, category, and tag filters combine with AND. Tags can match any or
+  all of the selected tags, and the page offers both.
+- Results are paginated at ten per page, ordered by name.
+- The app is for local use: SQLite, `DEBUG` on, and no front-end build step.
+  Scaling notes below cover what would change for a larger catalog.
 
 ## Data model
 
@@ -97,8 +116,10 @@ Products are searched and filtered with these inputs, which can be combined:
 - **Invalid values are rejected, not ignored.** An unknown category or tag ID, a
   malformed ID, or an unsupported `tag_mode` makes the filter form invalid.
 
-For example, `?q=boils&category=1&tags=2&tags=3&tag_mode=all` finds products in
-category 1 whose description contains "boils" and that have both tag 2 and tag 3.
+For example, with the sample data loaded,
+`?q=board&category=1&tags=3&tags=5&tag_mode=all` finds products in the Kitchen
+category (ID 1) whose description contains "board" and that have both the `gift`
+(ID 3) and `sale` (ID 5) tags: the Bamboo Cutting Board.
 
 The validation lives in `ProductFilterForm` (`products/forms.py`) and the
 queries in `filter_products` (`products/querysets.py`).
@@ -259,6 +280,10 @@ trailing whitespace, and Black and Ruff editor integrations handle Python.
 ## Checks
 
 ```sh
+poetry run pre-commit run --all-files
 poetry run python manage.py check
+poetry run python manage.py makemigrations --check --dry-run
 poetry run python manage.py test
 ```
+
+`makemigrations --check` fails if a model change is missing its migration.
