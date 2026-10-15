@@ -19,6 +19,7 @@ From the project root:
 cp .env.example .env   # or use the .env file you were given
 poetry install
 poetry run python manage.py migrate
+poetry run python manage.py loaddata sample_data   # optional sample catalog
 poetry run python manage.py runserver
 ```
 
@@ -30,6 +31,26 @@ The product page is at <http://127.0.0.1:8000/> and the Django admin at
 
 ```sh
 poetry run python manage.py createsuperuser
+```
+
+### Sample data
+
+The project includes a sample catalog of 5 categories, 10 tags, and 20 products.
+It was entered by hand through the Django admin and exported to
+`products/fixtures/sample_data.json`. To load it into a freshly migrated
+database:
+
+```sh
+poetry run python manage.py loaddata sample_data
+```
+
+The fixture is meant for a fresh database: it keeps the original primary keys, so
+loading it into a database that already has data overwrites rows with the same
+keys. It contains only the `products` app, with no users or sessions. To
+regenerate it after editing the data in the admin:
+
+```sh
+poetry run python manage.py dumpdata products --indent 2 --output products/fixtures/sample_data.json
 ```
 
 ## Data model

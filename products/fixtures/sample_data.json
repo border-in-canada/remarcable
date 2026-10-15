@@ -1,0 +1,376 @@
+[
+{
+  "model": "products.category",
+  "pk": 1,
+  "fields": {
+    "name": "Kitchen"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 2,
+  "fields": {
+    "name": "Garden"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 3,
+  "fields": {
+    "name": "Home Office"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 4,
+  "fields": {
+    "name": "Outdoor & Camping"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 5,
+  "fields": {
+    "name": "Toys & Games"
+  }
+},
+{
+  "model": "products.tag",
+  "pk": 1,
+  "fields": {
+    "name": "popular"
+  }
+},
+{
+  "model": "products.tag",
+  "pk": 2,
+  "fields": {
+    "name": "durable"
+  }
+},
+{
+  "model": "products.tag",
+  "pk": 3,
+  "fields": {
+    "name": "gift"
+  }
+},
+{
+  "model": "products.tag",
+  "pk": 4,
+  "fields": {
+    "name": "handmade"
+  }
+},
+{
+  "model": "products.tag",
+  "pk": 5,
+  "fields": {
+    "name": "sale"
+  }
+},
+{
+  "model": "products.tag",
+  "pk": 6,
+  "fields": {
+    "name": "new"
+  }
+},
+{
+  "model": "products.tag",
+  "pk": 7,
+  "fields": {
+    "name": "beginner"
+  }
+},
+{
+  "model": "products.tag",
+  "pk": 8,
+  "fields": {
+    "name": "premium"
+  }
+},
+{
+  "model": "products.tag",
+  "pk": 9,
+  "fields": {
+    "name": "compact"
+  }
+},
+{
+  "model": "products.tag",
+  "pk": 10,
+  "fields": {
+    "name": "kids"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 1,
+  "fields": {
+    "name": "Kettle",
+    "description": "A stainless steel kettle with auto shut-off.",
+    "category": 1,
+    "tags": [
+      2,
+      3,
+      1
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 2,
+  "fields": {
+    "name": "Cast Iron Skillet",
+    "description": "Pre-seasoned cast iron skillet.",
+    "category": 1,
+    "tags": [
+      2,
+      1
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 3,
+  "fields": {
+    "name": "Bamboo Cutting Board",
+    "description": "A sturdy bamboo cutting board with a groove to catch juices.",
+    "category": 1,
+    "tags": [
+      3,
+      4,
+      5
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 4,
+  "fields": {
+    "name": "Ceramic Mugs",
+    "description": "Four ceramic mugs, each one a little different.",
+    "category": 1,
+    "tags": [
+      3,
+      4,
+      6
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 5,
+  "fields": {
+    "name": "Garden Hose",
+    "description": "20 meter kink-less garden hose",
+    "category": 2,
+    "tags": [
+      2,
+      5
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 6,
+  "fields": {
+    "name": "Shovel",
+    "description": "Steel shovel with wooden handle.",
+    "category": 2,
+    "tags": [
+      2
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 7,
+  "fields": {
+    "name": "Planter Box",
+    "description": "A wooden planter box with three sections for windowsill.",
+    "category": 2,
+    "tags": [
+      7,
+      3,
+      4
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 8,
+  "fields": {
+    "name": "Pruning Shears",
+    "description": "Sharp stainless steel pruning shears that make clean cuts through small branches.",
+    "category": 2,
+    "tags": []
+  }
+},
+{
+  "model": "products.product",
+  "pk": 9,
+  "fields": {
+    "name": "Desk Mat",
+    "description": "A cushioned desk mat that cushions your feet through a long day at a standing desk.",
+    "category": 3,
+    "tags": [
+      6,
+      8
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 10,
+  "fields": {
+    "name": "Monitor Stand",
+    "description": "Adjustable monitor stand made of solid wood",
+    "category": 3,
+    "tags": [
+      4,
+      1,
+      8
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 11,
+  "fields": {
+    "name": "Desk Organizer",
+    "description": "A compact desk organizer with slots for pens, sticky notes and charging cables.",
+    "category": 3,
+    "tags": [
+      9,
+      6,
+      5
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 12,
+  "fields": {
+    "name": "Notebook Pack",
+    "description": "Three lined notebooks.",
+    "category": 3,
+    "tags": [
+      9,
+      3,
+      5
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 13,
+  "fields": {
+    "name": "Water Bottle",
+    "description": "A stainless steel water bottle that maintains your drink temperature all day and fits in most cup holders.",
+    "category": 4,
+    "tags": [
+      2,
+      1,
+      5
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 14,
+  "fields": {
+    "name": "Tent",
+    "description": "Two-person tent. Easy set up.",
+    "category": 4,
+    "tags": [
+      7,
+      9,
+      6
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 15,
+  "fields": {
+    "name": "Lantern",
+    "description": "Rechargeable lantern with three brightness settings.",
+    "category": 4,
+    "tags": [
+      9,
+      1
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 16,
+  "fields": {
+    "name": "Hiking Backpack",
+    "description": "A hiking backpack with padded back panel that stays comfortable on a long hike.",
+    "category": 4,
+    "tags": [
+      2,
+      8
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 17,
+  "fields": {
+    "name": "Building Blocks",
+    "description": "Building blocks of assorted shapes. Hand-built and unique.",
+    "category": 5,
+    "tags": [
+      3,
+      4,
+      10,
+      1
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 18,
+  "fields": {
+    "name": "Settlers of Catan",
+    "description": "In Settlers of Catan you can build settlements, trade resources and race to ten points in this classic strategy board game for three to four players.",
+    "category": 5,
+    "tags": [
+      3,
+      1
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 19,
+  "fields": {
+    "name": "Jigsaw Puzzle",
+    "description": "A 1000-piece jigsaw puzzle of a mountain lake.",
+    "category": 5,
+    "tags": [
+      3,
+      1,
+      5
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 20,
+  "fields": {
+    "name": "Remote Control Car",
+    "description": "A fast remote controlled (RC car) with rechargeable battery and 30 meter range remote.",
+    "category": 5,
+    "tags": [
+      10,
+      6,
+      1
+    ]
+  }
+}
+]

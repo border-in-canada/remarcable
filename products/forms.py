@@ -15,6 +15,13 @@ class ProductFilterForm(forms.Form):
     # remote database under heavy traffic. Use a shared cache and clear it when a
     # category or tag is added, renamed or deleted, including bulk changes, which
     # skip Django signals.
+    #
+    # The query string uses numeric ids (?category=4&tags=2), which are stable
+    # but not readable. A production catalog would likely add a unique slug to
+    # Category and Tag (for example "outdoor-camping", filled from the name in
+    # the admin) and use to_field_name="slug" on these fields for readable,
+    # shareable URLs. Names are not used because they hold spaces and symbols and
+    # break saved links when renamed.
     category = forms.ModelChoiceField(
         queryset=Category.objects.all(),
         required=False,
