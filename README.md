@@ -3,12 +3,6 @@
 A Django take-home project for browsing products by description, category, and
 tags, using server-rendered Django templates and SQLite.
 
-## Status
-
-The Django project (`config`) and the `products` app are scaffolded, with
-linting, formatting, and pre-commit hooks configured. Models, admin
-configuration, and the search page are added in later changes.
-
 ## Prerequisites
 
 - Python 3.12
@@ -31,12 +25,33 @@ poetry run python manage.py runserver
 If you copied `.env.example`, set `DJANGO_SECRET_KEY` in `.env` to a long random
 string. The project will not start without it.
 
-The site is served at <http://127.0.0.1:8000/> and the Django admin at
-<http://127.0.0.1:8000/admin/>. Create an administrator account with:
+The Django admin is at <http://127.0.0.1:8000/admin/>. Create an administrator
+account with:
 
 ```sh
 poetry run python manage.py createsuperuser
 ```
+
+## Data model
+
+| Model      | Fields                                                              |
+| ---------- | ------------------------------------------------------------------- |
+| `Category` | `name` (unique, ignoring case)                                      |
+| `Tag`      | `name` (unique, ignoring case)                                      |
+| `Product`  | `name`, `description`, `category` (required), `tags` (zero or more) |
+
+A product belongs to exactly one category and can have any number of tags.
+A category that still has products cannot be deleted, so products are never left
+without a category; remove or reassign its products first. Categories and tags
+are ordered by name, and products by name then primary key so the order is
+always stable.
+
+## Admin
+
+Add categories and tags first, then products, at
+<http://127.0.0.1:8000/admin/>. The product list can be searched by name or
+description and filtered by category or tag, and tags are assigned with a
+two-pane selector on the product form.
 
 ## Working with Poetry
 
